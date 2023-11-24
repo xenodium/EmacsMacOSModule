@@ -2,6 +2,10 @@
 
 * An Emacs macOS module
 
+#+BEGIN_EXPORT html
+<img src="images/share.webp" alt="macOS sharing files from Emacs dired" width="80%"/>
+#+END_EXPORT
+
 While extending Emacs is best done in elisp, closer macOS integrations are only possible by using native APIs.
 
 [[https://github.com/SavchenkoValeriy/emacs-swift-module][emacs-swift-module]] enables loading native modules into Emacs, and thus extending with Swift native macOS APIs.
