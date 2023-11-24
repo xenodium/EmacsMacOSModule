@@ -1,0 +1,37 @@
+* An Emacs macOS module
+
+For now, this is mostly an experiment to play with [[https://github.com/SavchenkoValeriy/emacs-swift-module][emacs-swift-module]].
+
+* Setup
+
+- Open macos.el and =M-x eval-buffer=.
+- Run =M-x macos-module-dev-reload= to build and load the native module.
+
+* Utilities
+
+#+BEGIN_SRC emacs-lisp :results table :colnames '("Command" "Description") :exports results
+      (let ((rows))
+        (mapatoms
+         (lambda (symbol)
+           (when (and (string-match "^macos-"
+                                    (symbol-name symbol))
+                      (not (string-match "git-set-author-name-and-email-credentials"
+                                         (symbol-name symbol)))
+                      (commandp symbol))
+             (push `(,(symbol-name symbol)
+                     ,(car
+                       (split-string
+                        (or (documentation symbol t) "")
+                        "\n")))
+                   rows))))
+        (seq-sort (lambda (row1 row2)
+                    (string-greaterp (seq-elt row2 0) (seq-elt row1 0)))
+                  rows))
+#+END_SRC
+
+#+RESULTS:
+| Command                 | Description                          |
+|-------------------------+--------------------------------------|
+| macos-module-dev-reload | Rebuilt and reload native module.    |
+| macos-reveal-in-finder  | Reveal file(s) in macOS Finder.      |
+| macos-share             | Share file(s) with other macOS apps. |
