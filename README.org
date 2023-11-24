@@ -4,7 +4,7 @@ For now, this is mostly an experiment to play with [[https://github.com/Savchenk
 
 * Setup
 
-- Open macos.el and =M-x eval-buffer=.
+- Open =macos.el= and =M-x eval-buffer=.
 - Run =M-x macos-module-dev-reload= to build and load the native module.
 
 * Utilities
