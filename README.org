@@ -2,9 +2,7 @@
 
 * An Emacs macOS module
 
-#+BEGIN_EXPORT html
-<img src="https://raw.githubusercontent.com/xenodium/EmacsMacOSModule/main/images/share.webp" alt="macOS sharing files from Emacs dired" width="80%"/>
-#+END_EXPORT
+#+HTML: <img src="https://raw.githubusercontent.com/xenodium/EmacsMacOSModule/main/images/share.webp" alt="macOS sharing files from Emacs dired" width="80%"/>
 
 While extending Emacs is best done in elisp, closer macOS integrations are only possible by using native APIs.
 
