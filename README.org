@@ -6,9 +6,9 @@ While extending Emacs is best done in elisp, closer macOS integrations are only 
 
 [[https://github.com/SavchenkoValeriy/emacs-swift-module][emacs-swift-module]] enables loading native modules into Emacs, and thus extending with Swift native macOS APIs.
 
-For now, this is mostly an experiment to exercise [[https://github.com/SavchenkoValeriy/emacs-swift-module][emacs-swift-module]] and see where we can take the native integrations.
+For now, this is mostly an experiment to exercise [[https://github.com/SavchenkoValeriy/emacs-swift-module][emacs-swift-module]] and see where we can take native integrations.
 
-This repo includes native Emacs interactive commands to reveal files and share them. For example, AirDrop your current buffer or a selection of dired files.
+This repo currently includes native Emacs interactive commands to reveal files and share them. For example, AirDrop your current buffer or a selection of dired files.
 
 * Setup
 
