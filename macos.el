@@ -85,7 +85,7 @@ active, share files in region.  Otherwise share file at point."
   (cdr (posn-x-y (posn-at-point (point)))))
 
 (defun macos-module-dev-reload ()
-  "Rebuilt and reload native module."
+  "Rebuild and reload native module."
   (interactive)
   (compile (format "swift build && %s -ne '(module-load \"%s\")'"
                    (executable-find "emacsclient")

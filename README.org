@@ -32,6 +32,6 @@ For now, this is mostly an experiment to play with [[https://github.com/Savchenk
 #+RESULTS:
 | Command                 | Description                          |
 |-------------------------+--------------------------------------|
-| macos-module-dev-reload | Rebuilt and reload native module.    |
+| macos-module-dev-reload | Rebuild and reload native module.    |
 | macos-reveal-in-finder  | Reveal file(s) in macOS Finder.      |
 | macos-share             | Share file(s) with other macOS apps. |
