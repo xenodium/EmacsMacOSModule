@@ -46,6 +46,11 @@ active, reveal files in region.  Otherwise reveal file at point."
   (interactive)
   (macos-module--reveal-in-finder (vconcat (macos--files-dwim))))
 
+(defun macos-show-emoji-picker ()
+  "Show macOS emoji picker."
+  (interactive)
+  (macos-module--show-emoji-picker))
+
 (defun macos-share ()
   "Share file(s) with other macOS apps.
 

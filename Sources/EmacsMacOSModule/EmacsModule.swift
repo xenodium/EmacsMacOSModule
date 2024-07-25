@@ -70,6 +70,13 @@ class EmacsModule: Module {
     ) { (env: Environment, files: [String]) in
       return NSSharingService.sharingServices(forItems: [""]).map { $0.title }
     }
+
+    try env.defun(
+      "macos-module--show-emoji-picker",
+      with: "Show emoji picker (macOS module implementation)."
+    ) { (env: Environment) in
+      NSApp.orderFrontCharacterPalette(nil)
+    }
   }
 }
 

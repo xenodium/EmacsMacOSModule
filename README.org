@@ -45,3 +45,4 @@ This repo currently includes native Emacs interactive commands to reveal files a
 | macos-module-dev-reload | Rebuild and reload native module.    |
 | macos-reveal-in-finder  | Reveal file(s) in macOS Finder.      |
 | macos-share             | Share file(s) with other macOS apps. |
+| macos-show-emoji-picker | Show macOS emoji picker.             |
