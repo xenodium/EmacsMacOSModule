@@ -106,16 +106,28 @@ active, share files in region.  Otherwise share file at point."
   "Return the y coordinate at point."
   (cdr (posn-x-y (posn-at-point (point)))))
 
-(defun macos-module-dev-reload ()
+(defun macos-load-module ()
+  "Loads cached module.
+
+Builds and loads if no cache available.
+
+To explicitly rebuild and reload, use `macos-rebuild-module-and-reload'."
+  (let ((module-path (macos--built-module-path)))
+    (if (file-exists-p module-path)
+        (module-load module-path)
+      (macos-rebuild-module-and-reload))))
+
+(defun macos-rebuild-module-and-reload ()
   "Rebuild and reload native module."
   (interactive)
-  (compile (format "swift build && %s -ne '(module-load \"%s\")'"
-                   (executable-find "emacsclient")
-                   (macos--built-module-path))))
+  (let ((compilation-ask-about-save nil))
+    (compile (format "swift build && %s -ne '(module-load \"%s\")'"
+                     (executable-find "emacsclient")
+                     (macos--built-module-path)))))
 
 (defun macos--module-source-root ()
   "Return the source root directory for the native module."
-  (let ((project-root (expand-file-name (locate-dominating-file default-directory "Package.swift"))))
+  (let ((project-root (expand-file-name (file-name-directory (symbol-file 'macos--module-source-root 'defun)))))
     (unless project-root
       (error "Not in macos project"))
     (unless (file-exists-p (file-name-concat project-root "macos.el"))
