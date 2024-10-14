@@ -13,9 +13,15 @@ For now, this is mostly an experiment to exercise [[https://github.com/Savchenko
 This repo currently includes native Emacs interactive commands to reveal files and share them. For example, AirDrop your current buffer or a selection of dired files.
 
 * Setup
+1. Clone this package.
+2. Load with:
 
-- Open =macos.el= and =M-x eval-buffer=.
-- Run =M-x macos-module-dev-reload= to build and load the native module.
+#+begin_src emacs-lisp :lexical no
+  (use-package macos
+    :load-path "path/to/cloned/package/EmacsMacOSModule"
+    :config
+    (macos-load-module))
+#+end_src
 
 * Utilities
 
@@ -40,9 +46,9 @@ This repo currently includes native Emacs interactive commands to reveal files a
 #+END_SRC
 
 #+RESULTS:
-| Command                 | Description                          |
-|-------------------------+--------------------------------------|
-| macos-module-dev-reload | Rebuild and reload native module.    |
-| macos-reveal-in-finder  | Reveal file(s) in macOS Finder.      |
-| macos-share             | Share file(s) with other macOS apps. |
-| macos-show-emoji-picker | Show macOS emoji picker.             |
+| Command                         | Description                          |
+|---------------------------------+--------------------------------------|
+| macos-rebuild-module-and-reload | Rebuild and reload native module.    |
+| macos-reveal-in-finder          | Reveal file(s) in macOS Finder.      |
+| macos-share                     | Share file(s) with other macOS apps. |
+| macos-show-emoji-picker         | Show macOS emoji picker.             |
