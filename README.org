@@ -17,6 +17,12 @@ This repo currently includes native Emacs interactive commands to reveal files a
 2. Load with:
 
 #+begin_src emacs-lisp :lexical no
+  ;; Emacs 30+
+  (use-package macos
+    :vc (:url "https://github.com/xenodium/EmacsMacOSModule")
+    :config
+    (macos-load-module))
+
   (use-package macos
     :load-path "path/to/cloned/package/EmacsMacOSModule"
     :config
