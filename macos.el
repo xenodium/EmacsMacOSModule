@@ -1,5 +1,4 @@
-;;; macos.el --- macOS utilities with native integration.
-;; -*- lexical-binding: t; -*-
+;;; macos.el --- macOS utilities with native integration.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023 Alvaro Ramirez
 ;;
@@ -26,6 +25,8 @@
 
 ;;; Code:
 
+(require 'map)
+
 (defvar macos-lib-name "libEmacsMacOSModule.dylib")
 
 (defvar macos-module-install-dir (expand-file-name (file-name-concat user-emacs-directory "modules" "macos")))
@@ -35,6 +36,12 @@
 (declare-function macos-module--share "ext:macos-module" t)
 
 (declare-function macos-module--reveal-in-finder "ext:macos-module" t)
+
+(declare-function macos-module--quick-look "ext:macos-module" t)
+
+(declare-function macos-module--quick-look-hide "ext:macos-module" t)
+
+(declare-function macos-module--quick-look-visible-p "ext:macos-module" t)
 
 (defun macos-reveal-in-finder ()
   "Reveal file(s) in macOS Finder.
@@ -137,6 +144,102 @@ To explicitly rebuild and reload, use `macos-rebuild-module-and-reload'."
 (defun macos--built-module-path ()
   "Return the path to the built module."
   (file-name-concat (macos--module-source-root) ".build" "debug" macos-lib-name))
+
+(defun macos-quick-look ()
+  "Preview file(s) with macOS Quick Look.
+
+If visiting a buffer with associated file, preview it.
+
+While in `dired', any selected files, preview those.  If region is
+active, preview files in region.  Otherwise preview file at point."
+  (interactive)
+  (macos-module--quick-look (vconcat (macos--files-dwim)) 0
+                            (macos--quick-look-rect-vector
+                             (macos--quick-look-source-rect))))
+
+(defun macos--quick-look-source-rect ()
+  "Return the file name rectangle at point as an alist.
+
+Return nil if there is no file name at point or it is off screen.
+Coordinates are Emacs display pixels.  Quick Look zooms its panel
+out of (and back into) this rectangle.
+
+For a Dired line whose file name is drawn 90 pixels wide, 38 pixels
+from the left of the display and 275 from the top, on a 21 pixel line:
+
+  (macos--quick-look-source-rect)
+  => ((:x . 38) (:y . 275) (:width . 90) (:height . 21))"
+  (save-excursion
+    (when-let* (((derived-mode-p 'dired-mode))
+                (start (dired-move-to-filename))
+                (top-left (window-absolute-pixel-position start))
+                (top-right (window-absolute-pixel-position
+                            (progn (dired-move-to-end-of-filename t) (point)))))
+      (list (cons :x (car top-left))
+            (cons :y (cdr top-left))
+            (cons :width (max 1 (- (car top-right) (car top-left))))
+            (cons :height (default-line-height))))))
+
+(defun macos--quick-look-rect-vector (rect)
+  "Convert RECT into the vector the native module expects.
+
+RECT is an alist as returned by `macos--quick-look-source-rect', or
+nil for no zoom origin, which makes Quick Look fade the panel in.
+
+  (macos--quick-look-rect-vector
+   \\='((:x . 38) (:y . 275) (:width . 90) (:height . 21)))
+  => [38 275 90 21]
+
+  (macos--quick-look-rect-vector nil)
+  => []"
+  (if rect
+      (vector (map-elt rect :x)
+              (map-elt rect :y)
+              (map-elt rect :width)
+              (map-elt rect :height))
+    []))
+
+(defun macos-quick-look-dismiss ()
+  "Dismiss the macOS Quick Look panel."
+  (interactive)
+  (macos-module--quick-look-hide))
+
+(defun macos-quick-look-visible-p ()
+  "Return non-nil if the macOS Quick Look panel is visible."
+  (macos-module--quick-look-visible-p))
+
+(defvar-local macos--dired-quick-look-file nil
+  "File last handed to Quick Look in this buffer.")
+
+(define-minor-mode macos-dired-quick-look-mode
+  "Toggle macOS Quick Look previews following point in `dired'.
+
+Quick Look does not take keyboard focus, so navigating `dired'
+updates the preview in place."
+  :lighter " QL"
+  :global nil
+  (cond (macos-dired-quick-look-mode
+         (unless (derived-mode-p 'dired-mode)
+           (setq macos-dired-quick-look-mode nil)
+           (user-error "Not in a Dired buffer"))
+         (add-hook 'post-command-hook #'macos--dired-quick-look-update nil t)
+         (add-hook 'kill-buffer-hook #'macos-quick-look-dismiss nil t)
+         (macos--dired-quick-look-update))
+        (t
+         (remove-hook 'post-command-hook #'macos--dired-quick-look-update t)
+         (remove-hook 'kill-buffer-hook #'macos-quick-look-dismiss t)
+         (setq macos--dired-quick-look-file nil)
+         (macos-quick-look-dismiss))))
+
+(defun macos--dired-quick-look-update ()
+  "Preview the `dired' file at point, if it changed since last command."
+  (when-let* (((derived-mode-p 'dired-mode))
+              (file (dired-get-filename nil t))
+              ((not (equal file macos--dired-quick-look-file))))
+    (setq macos--dired-quick-look-file file)
+    (macos-module--quick-look (vector file) 0
+                              (macos--quick-look-rect-vector
+                               (macos--quick-look-source-rect)))))
 
 (provide 'macos)
 

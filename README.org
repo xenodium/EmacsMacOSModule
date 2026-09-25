@@ -10,7 +10,7 @@ While extending Emacs is best done in elisp, closer macOS integrations are only 
 
 For now, this is mostly an experiment to exercise [[https://github.com/SavchenkoValeriy/emacs-swift-module][emacs-swift-module]] and see where we can take native integrations.
 
-This repo currently includes native Emacs interactive commands to reveal files and share them. For example, AirDrop your current buffer or a selection of dired files.
+This repo currently includes native Emacs interactive commands to reveal files, share them, and preview them with Quick Look. For example, AirDrop your current buffer or a selection of dired files, or flip through dired previewing files via Quick Look.
 
 * Setup
 1. Clone this package.
@@ -27,6 +27,19 @@ This repo currently includes native Emacs interactive commands to reveal files a
     :load-path "path/to/cloned/package/EmacsMacOSModule"
     :config
     (macos-load-module))
+#+end_src
+
+* Quick Look
+
+=macos-quick-look= previews the current buffer's file, or dired's marked files.
+
+=macos-dired-quick-look-mode= previews the dired file at point and keeps the preview in sync as you move.
+
+Add a binding via =use-package= to toggle previews with =SPC=, as in Finder:
+
+#+begin_src emacs-lisp :lexical no
+  :bind (:map dired-mode-map
+              ("SPC" . macos-dired-quick-look-mode))
 #+end_src
 
 * Utilities
@@ -52,9 +65,12 @@ This repo currently includes native Emacs interactive commands to reveal files a
 #+END_SRC
 
 #+RESULTS:
-| Command                         | Description                          |
-|---------------------------------+--------------------------------------|
-| macos-rebuild-module-and-reload | Rebuild and reload native module.    |
-| macos-reveal-in-finder          | Reveal file(s) in macOS Finder.      |
-| macos-share                     | Share file(s) with other macOS apps. |
-| macos-show-emoji-picker         | Show macOS emoji picker.             |
+| Command                         | Description                                                  |
+|---------------------------------+--------------------------------------------------------------|
+| macos-dired-quick-look-mode     | Toggle macOS Quick Look previews following point in `dired'. |
+| macos-quick-look                | Preview file(s) with macOS Quick Look.                       |
+| macos-quick-look-dismiss        | Dismiss the macOS Quick Look panel.                          |
+| macos-rebuild-module-and-reload | Rebuild and reload native module.                            |
+| macos-reveal-in-finder          | Reveal file(s) in macOS Finder.                              |
+| macos-share                     | Share file(s) with other macOS apps.                         |
+| macos-show-emoji-picker         | Show macOS emoji picker.                                     |

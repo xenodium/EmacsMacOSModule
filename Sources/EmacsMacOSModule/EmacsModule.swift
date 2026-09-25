@@ -77,6 +77,40 @@ class EmacsModule: Module {
     ) { (env: Environment) in
       NSApp.orderFrontCharacterPalette(nil)
     }
+    try env.defun(
+      "macos-module--quick-look",
+      with: """
+        Preview files in ARG1 with macOS Quick Look, selecting ARG2.
+
+        ARG1 must be a vector (not a list) of file paths.
+        ARG2 is the zero-based index of the file to select.
+        ARG3 is the vector [X Y WIDTH HEIGHT] to zoom the panel out of, in
+        Emacs display coordinates, or an empty vector to fade in instead.
+
+        Emacs keeps keyboard focus, so calling this repeatedly swaps the
+        previewed file in place.
+        """
+    ) { (env: Environment, files: [String], index: Int, sourceRect: [Int]) in
+      let urls =
+        files
+        .filter { FileManager.default.fileExists(atPath: $0) }
+        .map { URL(fileURLWithPath: $0) }
+      QuickLookPreviewer.shared.show(urls, at: index, sourceRect: sourceRect)
+    }
+
+    try env.defun(
+      "macos-module--quick-look-hide",
+      with: "Hide the macOS Quick Look panel."
+    ) { (env: Environment) in
+      QuickLookPreviewer.shared.hide()
+    }
+
+    try env.defun(
+      "macos-module--quick-look-visible-p",
+      with: "Return non-nil if the macOS Quick Look panel is visible."
+    ) { (env: Environment) in
+      QuickLookPreviewer.shared.isVisible
+    }
   }
 }
 
